@@ -1,0 +1,14 @@
+services:
+
+  db:
+   image: mongo:latest
+   ports:
+    - 27017:27017
+   environment:
+    - MONGO_INITDB_ROOT_USERNAME=fenix
+    - MONGO_INITDB_ROOT_PASSWORD=1assWord3
+   volumes:
+    - mongo_db_importer_api:/data/db
+
+volumes:
+  mongo_db_importer_api:
