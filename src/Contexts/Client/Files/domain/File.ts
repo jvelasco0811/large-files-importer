@@ -1,10 +1,11 @@
 import { randomUUID } from 'node:crypto'
 import os from 'node:os'
 import { calculateImportStatus } from './calculateImportStatus'
+import { FileStatus } from '../shared/types'
 
 export class File {
     public readonly id: string
-    public status: 'running' | 'finished' | 'failed' | 'canceled'
+    public status: FileStatus
     public readonly filePath: string
     public readonly location: string
     public cancel: VoidFunction
@@ -14,7 +15,7 @@ export class File {
     public downloadProgress: any
     public eta: any
 
-    constructor(id: string, status: 'running' | 'finished' | 'failed' | 'canceled', filePath: string, location: string)
+    constructor(id: string, status: FileStatus, filePath: string, location: string)
     {    
         this.id = id
         this.status = status
@@ -58,7 +59,7 @@ export class File {
         }
     }
 
-    public updateFileStatus(status: 'running' | 'finished' | 'failed' | 'canceled'): void {
+    public updateFileStatus(status: FileStatus): void {
         this.status = status
     }
 
