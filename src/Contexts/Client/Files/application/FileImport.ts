@@ -43,11 +43,13 @@ export class FileImport {
 
                     let text = decoder.decode(chunk);
                     text = text.replace(/\n/g, ' ')
-                    writer.write(text);
+                    // writer.write(text);
                     
-                    // this.fileRepository.save(text)
+                    this.fileRepository.save(text, file.id)
 
                 }
+
+
   
             }
             catch (e) {

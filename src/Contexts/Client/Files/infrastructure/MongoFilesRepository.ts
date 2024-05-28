@@ -1,44 +1,28 @@
-import { MongoClient, GridFSBucket } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import fs from 'node:fs';
 import { Readable } from 'node:stream';
 import { File } from "../domain/File";
 import { FileRepository } from "../domain/FileRepository";
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://fenix:1assWord3@localhost:27017';
 const client = new MongoClient(MONGODB_URI);
+
+// client.on('commandStarted', started => console.log(started));
+// client.db().collection('pets');
+// await client.insertOne({ name: 'spot', kind: 'dog' });
+
 export class MongoFilesRepository implements FileRepository {
-    public async save(chunk: string): Promise<string | undefined> {
-        try {
-    // Connect to the MongoDB cluster
-    await client.connect();
+    public async save(chunk: string, fileId: string): Promise<void> {
+    try {
 
-    // Get a reference to the database
-    const db = client.db('mydatabase');
+        const collection = client.db('imported_files').collection(fileId);
 
-    const bucket = new GridFSBucket(db);
+        await collection.insertOne({ chunk });
 
-    const uploadStream = bucket.openUploadStream('users');
+    }
 
-    const readableStream = Readable.from(Buffer.from(chunk, 'utf-8'));
-    readableStream.pipe(uploadStream);
-
-    return new Promise<string>((resolve, reject) => {
-        uploadStream.on('finish', () => {
-            console.log('Chunk uploaded to MongoDB successfully');
-            resolve(uploadStream.id.toString());
-        });
-
-        uploadStream.on('error', (error: any) => {
-            console.error('Error uploading chunk to MongoDB:', error);
-            reject(error);
-        });
-    });
-
-          } catch (err) {
-            console.error('Error connecting to MongoDB:', err);
-          } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close();
-          }
+    catch (err) {
+        console.error('Error connecting to MongoDB:', err);
+    } 
 
     }
 }

@@ -1,5 +1,5 @@
 import { File } from "./File";
 
 export interface FileRepository {
-  save(chunk: string): Promise<string | undefined>
+  save(chunk: string, fileId: string): Promise<void>
 }
