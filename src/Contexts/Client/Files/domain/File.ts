@@ -47,4 +47,19 @@ export class File {
 
     }
 
+    public importStatus(): object {
+        return {
+            
+            downloadSpeed: this.downloadSpeed,
+            downloaded: this.downloaded,
+            fileSize: this.fileSize,
+            downloadProgress: this.downloadProgress,
+            eta: this.eta
+        }
+    }
+
+    public updateFileStatus(status: 'running' | 'finished' | 'failed' | 'canceled'): void {
+        this.status = status
+    }
+
 }

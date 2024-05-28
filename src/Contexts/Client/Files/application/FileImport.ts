@@ -1,5 +1,6 @@
+import { errorMonitor } from "supertest/lib/test";
 import { File } from "../domain/File";
-import { FileRepository } from "../domain/FileRepository";
+import { FileRepository, FileRepositoryMem } from "../domain/FileRepository";
 import fs from "node:fs"
 import { Readable } from 'node:stream';
 
@@ -8,7 +9,7 @@ export class FileImport {
 
     readonly url: string
 
-    constructor(url: string, private fileRepository: FileRepository) {
+    constructor(url: string, private fileRepository: FileRepository, private memoryFileRepository: FileRepositoryMem ) {
         this.url = url
     }
     
@@ -28,36 +29,41 @@ export class FileImport {
                 		}
             }
             try {
+              
+                this.memoryFileRepository.save(file)
 
                 const response = await fetch(this.url, { signal: downloadTaskController.signal })
                 const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
     
-                const writer = fs.createWriteStream(file.filePath);
-                const decoder = new TextDecoder();
-    
+                // const writer = fs.createWriteStream(file.filePath);
+
+                // console.log("## NEW ARRAY ##", this.memoryFileRepository.getAllFiles())
+
                 for await (const chunk of response.body) {
                     // if (signal.aborted) throw signal.reason;
                     // Do something with the chunk
-
                     file.updateStatus(chunk.length, totalSize)
-
+                    const decoder = new TextDecoder();
                     let text = decoder.decode(chunk);
-                    text = text.replace(/\n/g, ' ')
-                    // writer.write(text);
                     
-                    this.fileRepository.save(text, file.id)
+                    this.memoryFileRepository.update(file)
+                    
+                    this.fileRepository.save(chunk, file)
 
                 }
 
+                file.updateFileStatus('finished')
 
   
             }
-            catch (e) {
-                if (e instanceof TypeError) {
-                  console.log(e);
-                  console.log("TypeError: Browser may not support async iteration");
-                } else {
-                  console.log(`Error in async iterator: ${e}.`);
+            catch (err: any) {
+                if(err.name === 'AbortError') {
+                  console.log('Download canceled')
+                  return
+                }
+                else {
+                  console.log(`Error in async iterator: ${err}.`);
+                  file.updateFileStatus('failed');
                 }
               }
             
