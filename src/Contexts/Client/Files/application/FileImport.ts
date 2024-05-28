@@ -1,13 +1,13 @@
 import { File } from "../domain/File";
 import { FileRepository, FileRepositoryMem } from "../domain/FileRepository";
-
+import { CustomError } from "../shared/CustomError";
 
 export class FileImport {
 
     readonly url: string
 
     constructor(url: string, private fileRepository: FileRepository, private memoryFileRepository: FileRepositoryMem ) {
-        this.url = url
+        this.url = this.validateURL(url)
     }
     
     async run(): Promise<File> {
@@ -30,11 +30,13 @@ export class FileImport {
                 this.memoryFileRepository.save(file)
 
                 const response = await fetch(this.url, { signal: downloadTaskController.signal })
-                const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
-    
-                // const writer = fs.createWriteStream(file.filePath);
 
-                // console.log("## NEW ARRAY ##", this.memoryFileRepository.getAllFiles())
+                if (!response.ok) {
+                  throw new CustomError('request_error','File not exist')
+                }
+       
+                const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
+
 
                 for await (const chunk of response.body) {
                     // if (signal.aborted) throw signal.reason;
@@ -58,10 +60,6 @@ export class FileImport {
                   console.log('Download canceled')
                   return
                 }
-                else {
-                  console.log(`Error in async iterator: ${err}.`);
-                  file.updateFileStatus('failed');
-                }
               }
             
 
@@ -71,6 +69,16 @@ export class FileImport {
         downloadTask(file)
         return file
 
+    }
+
+    private validateURL(url: string): string {
+      const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
+    
+      if (!urlFormat.test(url)) {
+        throw new CustomError('invalid_url','Wrong URL format should be a csv file');
+      }
+    
+       return url
     }
 
 
