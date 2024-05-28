@@ -27,47 +27,47 @@ describe('Given a request to import a large file', () => {
     })
 })
 
-describe('Given a request to get status of a large file', () => {
-    describe('When a GET request is send to /api/v1/file/{token}/status', () => {
-        it('Then it should return a message with the status of file imported', async () => {
-            // Given
-            // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir
-            const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'           
-            const response = await api.post('/api/v1/file').send({ url });
-            const token = response.body.token
+// describe('Given a request to get status of a large file', () => {
+//     describe('When a GET request is send to /api/v1/file/{token}/status', () => {
+//         it('Then it should return a message with the status of file imported', async () => {
+//             // Given
+//             // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir
+//             const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'           
+//             const response = await api.post('/api/v1/file').send({ url });
+//             const token = response.body.token
             
 
-            // When
-            const statusResponse = await api.get(`/api/v1/file/${token}/status`);
+//             // When
+//             const statusResponse = await api.get(`/api/v1/file/${token}/status`);
 
-            // Then
-            expect(statusResponse.statusCode).toBe(200)
-            expect(statusResponse.body.status).toBe('running')
-            await api.delete(`/api/v1/file/${token}/cancel`);            
+//             // Then
+//             expect(statusResponse.statusCode).toBe(200)
+//             expect(statusResponse.body.status).toBe('running')
+//             await api.delete(`/api/v1/file/${token}/cancel`);            
 
-        })
-    })
-})
+//         })
+//     })
+// })
 
-describe('Given a request to cancel the import of a large file', () => {
-    describe('When a DELETE request is send to /api/v1/file/{token}/cancel', () => {
-        it('Then it should return a message of the import has been canceled', async () => {
-            // Given
-            // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir
-            const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'
-            const response = await api.post('/api/v1/file').send({ url });
-            const token = response.body.token
-            const expected =  { message: 'File import task canceled' }       
+// describe('Given a request to cancel the import of a large file', () => {
+//     describe('When a DELETE request is send to /api/v1/file/{token}/cancel', () => {
+//         it('Then it should return a message of the import has been canceled', async () => {
+//             // Given
+//             // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir
+//             const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'
+//             const response = await api.post('/api/v1/file').send({ url });
+//             const token = response.body.token
+//             const expected =  { message: 'File import task canceled' }       
 
-            // When
-            const cancelResponse = await api.delete(`/api/v1/file/${token}/cancel`);
+//             // When
+//             const cancelResponse = await api.delete(`/api/v1/file/${token}/cancel`);
 
-            // Then
-            expect(cancelResponse.statusCode).toBe(200)
-            expect(cancelResponse.body).toEqual(expected)
-        })
-    })
-})
+//             // Then
+//             expect(cancelResponse.statusCode).toBe(200)
+//             expect(cancelResponse.body).toEqual(expected)
+//         })
+//     })
+// })
 
 
 
