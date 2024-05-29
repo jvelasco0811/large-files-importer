@@ -1,6 +1,6 @@
 import { File } from "../domain/File";
 import { FileRepository, FileRepositoryMem } from "../domain/FileRepository";
-import { CustomError } from "../shared/CustomError";
+import { ErrorHandler } from "../shared/ErrorHandler";
 
 export class FileImport {
 
@@ -27,10 +27,6 @@ export class FileImport {
         try {
             const response = await fetch(this.url, { signal: downloadTaskController.signal });
 
-            if (!response.ok) {
-                throw new CustomError('request_error', 'File not exist');
-            }
-
             const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
 
             for await (const chunk of response.body) {
@@ -55,7 +51,7 @@ export class FileImport {
     const urlExists = await this.checkUrlExists();
 
     if (!urlExists) {
-        throw new CustomError('request_error', 'File not exist');
+        throw new ErrorHandler('request_error', 'File not exist',404);
     }
 
     this.memoryFileRepository.save(file);
@@ -69,7 +65,7 @@ export class FileImport {
       const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
       
       if (!urlFormat.test(url)) {
-        throw new CustomError('invalid_url','Wrong URL format should be a csv file');
+        throw new ErrorHandler('invalid_url_format','Wrong URL format should be a csv file',400);
       }
     
        return url

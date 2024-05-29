@@ -32,7 +32,7 @@ describe('Given a user want to import a large file', () => {
             // Given
             const url = 'https://jv-data-big.s3.amazonaws.com/not-csv-file'
             const expectedError = {
-                "type": "invalid_url",
+                "type": "invalid_url_format",
                 "message": "Wrong URL format should be a csv file"
             }
 

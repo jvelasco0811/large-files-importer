@@ -1,6 +1,6 @@
 import { File } from "../domain/File";
 import { FileRepositoryMem } from "../domain/FileRepository";
-import { CustomError } from "../shared/CustomError";
+import { ErrorHandler } from "../shared/ErrorHandler";
 
 export class MemoryFileRepository implements FileRepositoryMem {
      
@@ -25,7 +25,7 @@ export class MemoryFileRepository implements FileRepositoryMem {
 
     public async cancel(id: string): Promise<File | undefined> {
         const file: File | undefined = MemoryFileRepository.files.get(id);
-        if(file?.status == 'finished') throw new CustomError('cancel_error', 'file already downloaded')
+        if(file?.status == 'finished') throw new ErrorHandler('cancel_error', 'file already downloaded',400)
         if (file) {
 
             file.updateFileStatus('canceled')

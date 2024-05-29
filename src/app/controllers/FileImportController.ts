@@ -28,16 +28,7 @@ export const FileImportController = async (req: Request, res: Response) => {
 			console.log('Download canceled');
 			return;
 		  }
-		  if (error.type === 'invalid_url') {
-			res.status(400).json({ type: error.type, message: error.message })
-
-		  }
-		  if (error.type === 'request_error') {
-			console.log(error.message);
-			res.status(404).json({ type: error.type, message: error.message })
-
-		  }
-		  
+		  res.status(error.code).json({ type: error.type, message: error.message })
 
 	
 		  

@@ -4,12 +4,6 @@ import app from "../../src/app/app"
 
 const api = request(app)
 
-// const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
-// const locationPattern = /^\/api\/v1\/file\/[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\/status$/i;
-
-// const url = 'https://public-vizz-storage.s3.amazonaws.com/backend/coding-challenges/large-file-importer/fhvhv_tripdata_2024-01.csv'
-
-
 describe('Given a user want to Cancel the Import', () => {
     describe('When a DELETE request is send', () => {
         it('Then it should cancel the File Import', async () => {

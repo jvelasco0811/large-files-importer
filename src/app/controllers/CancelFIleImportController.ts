@@ -25,13 +25,8 @@ export const CancelFileImportController = async (req: Request, res: Response) =>
 
 		});
 	} catch (error: any) {
-		if(error.type === 'invalid_token') {
-			
-			res.status(400).json({ type: error.type, message: error.message })
-		}
-		if(error.type === 'file_not_found') {
-			
-			res.status(404).json({ type: error.type, message: error.message })
-		}
+
+		res.status(error.code).json({ type: error.type, message: error.message })
+
 	}
 }

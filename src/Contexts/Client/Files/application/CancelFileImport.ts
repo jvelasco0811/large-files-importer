@@ -1,6 +1,6 @@
 import { File } from "../domain/File";
 import { FileRepositoryMem } from "../domain/FileRepository";
-import { CustomError } from "../shared/CustomError";
+import { ErrorHandler } from "../shared/ErrorHandler";
 
 export class CancelFileImport {
 
@@ -15,7 +15,7 @@ export class CancelFileImport {
         const file: File | undefined = await this.memoryFileRepository.getById(this.fileImportId);
 
         if(!file) {
-            throw new CustomError('file_not_found','File import not found');
+            throw new ErrorHandler('file_not_found','File import not found',404);
         }
 
         return await this.memoryFileRepository.cancel(this.fileImportId)
@@ -27,7 +27,7 @@ export class CancelFileImport {
         const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
         if (!uuidv4Regex.test(fileImportId)) {
-          throw new CustomError('invalid_token','Invalid file id');
+          throw new ErrorHandler('invalid_token','Invalid file id',400);
         }
       
          return fileImportId
