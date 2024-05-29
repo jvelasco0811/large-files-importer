@@ -11,13 +11,8 @@ export class CancelFileImport {
     }
 
 
-    async run(): Promise<File | undefined> {
-        const file: File | undefined = await this.memoryFileRepository.getById(this.fileImportId);
-
-        if(!file) {
-            throw new ErrorHandler('file_not_found','File import not found',404);
-        }
-
+    async run(): Promise<File> {
+  
         return await this.memoryFileRepository.cancel(this.fileImportId)
 
     }

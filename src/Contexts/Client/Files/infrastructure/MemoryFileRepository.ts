@@ -23,16 +23,19 @@ export class MemoryFileRepository implements FileRepositoryMem {
         MemoryFileRepository.files.set(file.id, file);
     }
 
-    public async cancel(id: string): Promise<File | undefined> {
+    public async cancel(id: string): Promise<File> {
         const file: File | undefined = MemoryFileRepository.files.get(id);
         if(file?.status == 'finished') throw new ErrorHandler('cancel_error', 'file already downloaded',400)
-        if (file) {
-
-            file.updateFileStatus('canceled')
-            file.cancel();
+        if(!file) {
+            throw new ErrorHandler('file_not_found','File import not found',404);
         }
 
+        file.updateFileStatus('canceled')
+        file.cancel();
         return file;
+
+
+        
     }
 
 

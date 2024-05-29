@@ -10,7 +10,7 @@ export class FileImport {
         this.url = this.validateURL(url)
     }
     
-    async run(): Promise<File | undefined> {
+    async run(): Promise<File> {
       const file = File.create();
   
       let downloadTaskController: AbortController | null = null;
@@ -41,10 +41,9 @@ export class FileImport {
             file.updateFileStatus('finished');
         } catch (error: any) {
             if (error.name === 'AbortError') {
-                console.log('Download canceled');
-                return file;
+                console.log({type: 'abort_error', message: 'Download canceled'});
             }
-            throw error;
+   
         }
     };
   

@@ -14,5 +14,5 @@ export interface FileRepositoryMem {
   getById(id: string): Promise<File | undefined>
   getAllFiles(): Promise<File[]>
   update(file: File): Promise<void>
-  cancel(id: string): Promise<File | undefined>
+  cancel(id: string): Promise<File>
 }

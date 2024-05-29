@@ -15,7 +15,6 @@ describe('Given a user want to the app endpoint', () => {
             const response = await api.get(`/api/v1/file/${endpoint}`)
             const expectedError = 'oops not found'
             // Then
-            console.log(response.body)
             expect(response.statusCode).toBe(404)
             expect(response.body).toEqual({ error: expectedError })
    

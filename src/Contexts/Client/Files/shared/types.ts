@@ -1,11 +1,21 @@
 export type FileStatus = 'running' | 'finished' | 'failed' | 'canceled'
 
-export interface FileStatusResponse {
+export interface ResponseFileImport {
+    
     token: string
-    message?: string
-    status?: string
-    download_speed?: string
-    downloaded?: string
-    file_size?: string
-    left?: string
+    location: string
+
 }
+
+export interface ResponseFileImportStatus {
+
+    id: string
+    status: string
+    download_speed: string
+    downloaded: string
+    file_size: string
+    download_progress: string
+    left: string
+
+}
+

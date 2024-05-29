@@ -12,7 +12,7 @@ export class StatusFileImport {
     }
 
 
-    async run(): Promise<File | undefined> {
+    async run(): Promise<File> {
         const file: File | undefined = await this.memoryFileRepository.getById(this.fileImportId);
 
         if(!file) {
