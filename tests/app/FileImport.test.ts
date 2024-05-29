@@ -57,11 +57,10 @@ describe('Given a user want to import a large file', () => {
 
             // When
             const response = await api.post('/api/v1/file').send({ url });
-            const token = response.body.token
 
             // Then
             expect(response.statusCode).toBe(404)
-            // expect(response.body).toEqual(expectedError)
+            expect(response.body).toEqual(expectedError)
   
         })
     })
