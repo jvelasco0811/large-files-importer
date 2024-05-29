@@ -10,7 +10,7 @@ export class FileImport {
         this.url = this.validateURL(url)
     }
     
-    async run(): Promise<File> {
+    async run(): Promise<File | undefined> {
 
         const file = File.create()
 
@@ -55,11 +55,12 @@ export class FileImport {
 
   
             }
-            catch (err: any) {
-                if(err.name === 'AbortError') {
+            catch (error: any) {
+                if(error.name === 'AbortError') {
                   console.log('Download canceled')
-                  return
+                  return file
                 }
+                throw error
               }
             
 
@@ -73,7 +74,7 @@ export class FileImport {
 
     private validateURL(url: string): string {
       const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
-    
+      
       if (!urlFormat.test(url)) {
         throw new CustomError('invalid_url','Wrong URL format should be a csv file');
       }

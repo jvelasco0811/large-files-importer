@@ -7,9 +7,9 @@ const locationPattern = /^\/api\/v1\/file\/[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-
 // const url = 'https://public-vizz-storage.s3.amazonaws.com/backend/coding-challenges/large-file-importer/fhvhv_tripdata_2024-01.csv'
 
 
-describe('Given a request to import a large file', () => {
+describe('Given a user want to import a large file', () => {
 
-    describe('When a POST request is send to /api/v1/file', () => {
+    describe('When a request to Import a Large file is send', () => {
         it('Then it should return a message with token and location', async () => {
             // Given
             const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'
@@ -27,33 +27,32 @@ describe('Given a request to import a large file', () => {
         })
     })
 
-    describe('When a POST request is send to /api/v1/file with wrong URL format', () => {
+    describe('When a request with wrong URL format', () => {
         it('Then it should return a message notifying that the URL format its wrong', async () => {
             // Given
-            const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.xed'
-            const errorMessage = {
+            const url = 'https://jv-data-big.s3.amazonaws.com/not-csv-file'
+            const expectedError = {
                 "type": "invalid_url",
                 "message": "Wrong URL format should be a csv file"
             }
 
             // When
             const response = await api.post('/api/v1/file').send({ url });
-            const token = response.body.token
 
             // Then
             expect(response.statusCode).toBe(400)
-            expect(response.body).toEqual(errorMessage)
+            expect(response.body).toEqual(expectedError)
   
         })
     })
 
-    // describe('When a POST request is send to /api/v1/file with file that not exist', () => {
-    //     it('Then it should return a message notifying that the URL format its wrong', async () => {
+    // describe('When a request with not existing file url', () => {
+    //     it('Then it should return a message notifying the file not found', async () => {
     //         // Given
-    //         const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-02.csv'
-    //         const errorMessage = {
+    //         const url = 'https://jv-data-big.s3.amazonaws.com/not-existing-file.csv'
+    //         const expectedError = {
     //             "type": "request_error",
-    //             "message": "Wrong URL format should be a csv file"
+    //             "message": "File not exist"
     //         }
 
     //         // When
@@ -61,8 +60,8 @@ describe('Given a request to import a large file', () => {
     //         const token = response.body.token
 
     //         // Then
-    //         expect(response.statusCode).toBe(404)
-    //         expect(response.body).toEqual(errorMessage)
+    //         expect(response.statusCode).toBe(400)
+    //         expect(response.body).toEqual(expectedError)
   
     //     })
     // })

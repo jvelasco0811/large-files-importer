@@ -10,9 +10,9 @@ const api = request(app)
 // const url = 'https://public-vizz-storage.s3.amazonaws.com/backend/coding-challenges/large-file-importer/fhvhv_tripdata_2024-01.csv'
 
 
-describe('Given a request to cancel the import of a large file', () => {
-    describe('When a DELETE request is send to /api/v1/file/{token}/cancel', () => {
-        it('Then it should return a message of the import has been canceled', async () => {
+describe('Given a user want to Cancel the Import', () => {
+    describe('When a DELETE request is send', () => {
+        it('Then it should cancel the File Import', async () => {
             // Given
             // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir
             const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'

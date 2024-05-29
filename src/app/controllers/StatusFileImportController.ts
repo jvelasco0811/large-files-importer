@@ -13,11 +13,6 @@ export const StatusFileImportController = async (req: Request, res: Response) =>
 		const statusFileImport = new StatusFileImport(fileImportId, memoryFileRepository)
 		const fileStatus = await statusFileImport.run()
 
-
-		// if (!task) {
-		//   res.status(404).json({ error: 'File import task not found' });
-		//   return;
-		// }
 		
 		res.status(200).json({
 			id: fileStatus.id,
@@ -39,7 +34,7 @@ export const StatusFileImportController = async (req: Request, res: Response) =>
 			
 			res.status(404).json({ type: error.type, message: error.message })
 		}
-		//  res.status(404).json({ error: 'File import task not found' })
+
 	}
 }
 

@@ -9,7 +9,7 @@ import { randomUUID } from 'node:crypto'
 
 
 describe('Given a user want to Get Status', () => {
-    describe('When send a Request to Get Status with a valid format', () => {
+    describe('When send a Request to Get Status', () => {
         it('Then it should return the File Importer Status', async () => {
             // Given
             // create a fake csv file with fake data of 50000 lines and save it in /tmp os dir

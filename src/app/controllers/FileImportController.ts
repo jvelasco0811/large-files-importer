@@ -10,29 +10,31 @@ const memoryFileRepository: MemoryFileRepository = new MemoryFileRepository()
 export const FileImportController = async (req: Request, res: Response) => {
 	const { url } = req.body
 
+	
 	try {
-
+		
 		const fileImport = new FileImport(url, mongoFilesRepository, memoryFileRepository)
-		const file: File = await fileImport.run()
+		const file: File | undefined = await fileImport.run()
+
 
 		res.status(200).json({
 			token: file.id,
 			location: file.location,
 		  });  
 
-	  } catch (err: any) {
+	} catch (error: any) {
 		
-		if (err.name === 'AbortError') {
+		if (error.name === 'AbortError') {
 			console.log('Download canceled');
 			return;
 		  }
-		  if (err.type === 'invalid_url') {
-			res.status(400).json({ type: err.type, message: err.message })
+		  if (error.type === 'invalid_url') {
+			res.status(400).json({ type: error.type, message: error.message })
 
 		  }
-		  if (err.type === 'request_error') {
-			console.log(err.message);
-			res.status(404).json({ type: err.type, message: err.message })
+		  if (error.type === 'request_error') {
+			console.log(error.message);
+			res.status(404).json({ type: error.type, message: error.message })
 
 		  }
 		  
