@@ -2,8 +2,8 @@ import request from "supertest"
 import app from "../../src/app/app"
 const api = request(app)
 import { randomUUID } from 'node:crypto'
-const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
-const locationPattern = /^\/api\/v1\/file\/[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\/status$/i;
+// const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+// const locationPattern = /^\/api\/v1\/file\/[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\/status$/i;
 
 // const url = 'https://public-vizz-storage.s3.amazonaws.com/backend/coding-challenges/large-file-importer/fhvhv_tripdata_2024-01.csv'
 
@@ -62,7 +62,7 @@ describe('Given a user want to Get Status', () => {
 
             // Then
             expect(statusResponse.statusCode).toBe(404)
-            // expect(statusResponse.body).toEqual(expectedError)
+            expect(statusResponse.body).toEqual(expectedError)
 
         })
     })

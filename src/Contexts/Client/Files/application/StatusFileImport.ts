@@ -13,7 +13,13 @@ export class StatusFileImport {
 
 
     async run(): Promise<File | undefined> {
-        return await this.memoryFileRepository.getById(this.fileImportId);
+        const file: File = await this.memoryFileRepository.getById(this.fileImportId);
+
+        if(!file) {
+            throw new CustomError('file_not_found','File import not found');
+        }
+
+        return file
     }
     
     private validateToken(fileImportId: string): string {
