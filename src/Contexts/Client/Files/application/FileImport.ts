@@ -11,66 +11,59 @@ export class FileImport {
     }
     
     async run(): Promise<File | undefined> {
-
-        const file = File.create()
-
-        let downloadTaskController: AbortController | null = null;
-        
-
-        const downloadTask = async (file: File) => {
-            downloadTaskController = new AbortController();
-            file.cancel = () => {
-                		if (downloadTaskController) {
-                		  downloadTaskController.abort();
-                		  file.status = 'canceled';
-                		}
-            }
-            try {
-              
-                this.memoryFileRepository.save(file)
-
-                const response = await fetch(this.url, { signal: downloadTaskController.signal })
-
-                if (!response.ok) {
-                  throw new CustomError('request_error','File not exist')
-                }
-       
-                const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
-
-
-                for await (const chunk of response.body) {
-                    // if (signal.aborted) throw signal.reason;
-                    // Do something with the chunk
-                    file.updateStatus(chunk.length, totalSize)
-                    const decoder = new TextDecoder();
-                    let text = decoder.decode(chunk);
-                    
-                    this.memoryFileRepository.update(file)
-                    
-                    this.fileRepository.save(chunk, file)
-
-                }
-
-                file.updateFileStatus('finished')
-
+      const file = File.create();
   
+      let downloadTaskController: AbortController | null = null;
+  
+      const downloadTask = async (file: File) => {
+        downloadTaskController = new AbortController();
+        file.cancel = () => {
+            if (downloadTaskController) {
+                downloadTaskController.abort();
+                file.status = 'canceled';
             }
-            catch (error: any) {
-                if(error.name === 'AbortError') {
-                  console.log('Download canceled')
-                  return file
-                }
-                throw error
-              }
-            
+        };
 
+        try {
+            const response = await fetch(this.url, { signal: downloadTaskController.signal });
 
+            if (!response.ok) {
+                throw new CustomError('request_error', 'File not exist');
+            }
+
+            const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
+
+            for await (const chunk of response.body) {
+                file.updateStatus(chunk.length, totalSize);
+                const decoder = new TextDecoder();
+                const text = decoder.decode(chunk);
+
+                this.memoryFileRepository.update(file);
+                this.fileRepository.save(chunk, file);
+            }
+
+            file.updateFileStatus('finished');
+        } catch (error: any) {
+            if (error.name === 'AbortError') {
+                console.log('Download canceled');
+                return file;
+            }
+            throw error;
         }
-        
-        downloadTask(file)
-        return file
+    };
+  
+    const urlExists = await this.checkUrlExists();
 
+    if (!urlExists) {
+        throw new CustomError('request_error', 'File not exist');
     }
+
+    this.memoryFileRepository.save(file);
+    downloadTask(file);
+
+    return file;
+  }
+  
 
     private validateURL(url: string): string {
       const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
@@ -81,6 +74,11 @@ export class FileImport {
     
        return url
     }
+
+    private async checkUrlExists(): Promise<boolean> {
+      const response = await fetch(this.url, { method: 'HEAD' });
+      return response.ok;
+    };
 
 
 }

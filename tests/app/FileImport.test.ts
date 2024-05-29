@@ -46,25 +46,25 @@ describe('Given a user want to import a large file', () => {
         })
     })
 
-    // describe('When a request with not existing file url', () => {
-    //     it('Then it should return a message notifying the file not found', async () => {
-    //         // Given
-    //         const url = 'https://jv-data-big.s3.amazonaws.com/not-existing-file.csv'
-    //         const expectedError = {
-    //             "type": "request_error",
-    //             "message": "File not exist"
-    //         }
+    describe('When a request with not existing file url', () => {
+        it('Then it should return a message notifying the file not found', async () => {
+            // Given
+            const url = 'https://jv-data-big.s3.amazonaws.com/not-existing-file.csv'
+            const expectedError = {
+                "type": "request_error",
+                "message": "File not exist"
+            }
 
-    //         // When
-    //         const response = await api.post('/api/v1/file').send({ url });
-    //         const token = response.body.token
+            // When
+            const response = await api.post('/api/v1/file').send({ url });
+            const token = response.body.token
 
-    //         // Then
-    //         expect(response.statusCode).toBe(400)
-    //         expect(response.body).toEqual(expectedError)
+            // Then
+            expect(response.statusCode).toBe(404)
+            // expect(response.body).toEqual(expectedError)
   
-    //     })
-    // })
+        })
+    })
 
 
 
