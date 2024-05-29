@@ -12,7 +12,7 @@ export const StatusFileImportController = async (req: Request, res: Response) =>
 		
 		const statusFileImport = new StatusFileImport(fileImportId, memoryFileRepository)
 		const fileStatus = await statusFileImport.run()
-		// const task = fileImportTasks[fileImportId];
+
 
 		// if (!task) {
 		//   res.status(404).json({ error: 'File import task not found' });
@@ -29,8 +29,13 @@ export const StatusFileImportController = async (req: Request, res: Response) =>
 			eta: fileStatus.eta,
 
 		});
-	} catch (error) {
-		 res.status(404).json({ error: 'File import task not found' })
+	} catch (error: any) {
+		console.log(error.message)
+		if(error.type === 'invalid_token') {
+			
+			res.status(400).json({ type: error.type, message: error.message })
+		}
+		//  res.status(404).json({ error: 'File import task not found' })
 	}
 }
 
