@@ -24,7 +24,14 @@ export const CancelFileImportController = async (req: Request, res: Response) =>
 			eta: canceledFile.eta,
 
 		});
-	} catch (error) {
-		 res.status(404).json({ error: 'File import task not found' })
+	} catch (error: any) {
+		if(error.type === 'invalid_token') {
+			
+			res.status(400).json({ type: error.type, message: error.message })
+		}
+		if(error.type === 'file_not_found') {
+			
+			res.status(404).json({ type: error.type, message: error.message })
+		}
 	}
 }

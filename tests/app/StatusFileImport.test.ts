@@ -29,7 +29,7 @@ describe('Given a user want to Get Status', () => {
         })
     })
 
-    describe('When send a Request with invalid File import id', () => {
+    describe('When send a Status Request with invalid File import id', () => {
         it('Then it should return a error message with invalid file import id', async () => {
             // Given
             const token = 'invalid-tokenxx'
@@ -48,7 +48,7 @@ describe('Given a user want to Get Status', () => {
         })
     })
 
-    describe('When send a Request with not existing File import id', () => {
+    describe('When send a Status Request with not existing File import id', () => {
         it('Then it should return a error message with file not found', async () => {
             // Given
             const token = randomUUID()
@@ -66,6 +66,7 @@ describe('Given a user want to Get Status', () => {
 
         })
     })
+
 
 })
 

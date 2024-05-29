@@ -30,7 +30,7 @@ export const StatusFileImportController = async (req: Request, res: Response) =>
 
 		});
 	} catch (error: any) {
-		console.log(error.message)
+
 		if(error.type === 'invalid_token') {
 			
 			res.status(400).json({ type: error.type, message: error.message })

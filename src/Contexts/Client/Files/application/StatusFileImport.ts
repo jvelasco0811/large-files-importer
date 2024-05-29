@@ -13,7 +13,7 @@ export class StatusFileImport {
 
 
     async run(): Promise<File | undefined> {
-        const file: File = await this.memoryFileRepository.getById(this.fileImportId);
+        const file: File | undefined = await this.memoryFileRepository.getById(this.fileImportId);
 
         if(!file) {
             throw new CustomError('file_not_found','File import not found');
