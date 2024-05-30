@@ -68,45 +68,6 @@ To run tests, use the following command:
 npm test
 \`\`\`
 
-## Project Structure
-
-\`\`\`plaintext
-.
-├── src
-│   ├── app
-│   │   ├── controllers
-│   │   │    ├── FileImportController.ts
-│   │   │    ├── StatusFileImportController.ts
-│   │   │    └── CancelFileImportController.ts
-│   │   ├── routes
-│   │   │    └── files.route.ts
-│   │   ├── app.ts
-│   │   ├── index.ts
-│   ├── Contexts
-│   │   ├── domain
-│   │   │   ├── calculateImportStatus.ts
-│   │   │   ├── File.ts
-│   │   │   └── FileRepository.ts
-│   │   ├── application
-│   │   │   ├── CancelFileImports.ts
-│   │   │   ├── StatusFileImports.ts
-│   │   │   └── FileImports.ts
-│   │   ├── infrastructure
-│   │   │   ├── MemoryFileRepository.ts
-│   │   │   └── MongoFileRepository.ts
-│   ├── shared
-│   │   └── ErrorHandler.ts
-│   ├── utils
-│   │   └── calculateImportStatus.ts
-│   └── index.ts
-├── tests
-│   ├── FileImport.test.ts
-│   └── ...
-├── package.json
-├── tsconfig.json
-└── README.md
-\`\`\`
-
 ## Usage
 
 ### Starting a File Import
