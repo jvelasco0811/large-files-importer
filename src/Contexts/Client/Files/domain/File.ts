@@ -14,6 +14,7 @@ export class File {
     public fileSize: any
     public downloadProgress: any
     public eta: any
+    private calculateStatus: ReturnType<typeof calculateImportStatus>;
 
     constructor(id: string, status: FileStatus, filePath: string, location: string)
     {    
@@ -27,6 +28,7 @@ export class File {
         this.fileSize = '0 MB'
         this.downloadProgress = '0 MB'
         this.eta = '0 seconds'
+        this.calculateStatus = calculateImportStatus();
  
     }
    
@@ -43,13 +45,13 @@ export class File {
     public async updateStatus(chunk: number, totalSize: number): Promise<void> {
 
 
-        const importStatus = await calculateImportStatus(chunk, totalSize)
+        const importStatus = await this.calculateStatus(chunk, totalSize);
 
-        this.downloadSpeed = importStatus.downloadSpeedMB
-        this.downloaded = importStatus.downloadedSizeMB
-        this.fileSize = importStatus.fileSizeMB
-        this.downloadProgress = importStatus.downloadProgress
-        this.eta = importStatus.eta
+        this.downloadSpeed = importStatus.downloadSpeedMB;
+        this.downloaded = importStatus.downloadedSizeMB;
+        this.fileSize = importStatus.fileSizeMB;
+        this.downloadProgress = importStatus.downloadProgress;
+        this.eta = importStatus.eta;
 
     }
 

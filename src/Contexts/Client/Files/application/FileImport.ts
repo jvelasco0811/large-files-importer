@@ -34,12 +34,12 @@ export class FileImport {
                 const decoder = new TextDecoder();
                 // const text = decoder.decode(chunk);
 
-                this.memoryFileRepository.update(file);
-                this.fileRepository.save(chunk, file);
+                await this.memoryFileRepository.update(file);
+                await this.fileRepository.save(chunk, file);
             }
 
             file.updateFileStatus('finished')
-            this.memoryFileRepository.update(file)
+            await this.memoryFileRepository.update(file)
 
         } catch (error: any) {
             if (error.name === 'AbortError') {
@@ -58,7 +58,7 @@ export class FileImport {
     }
 
     const file = File.create();
-    this.memoryFileRepository.save(file);
+    await this.memoryFileRepository.save(file);
 
     downloadTask(file);
 

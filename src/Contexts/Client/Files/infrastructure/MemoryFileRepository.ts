@@ -9,6 +9,7 @@ export class MemoryFileRepository implements FileRepositoryMem {
 
      public async save(file: File): Promise<void> {
         MemoryFileRepository.files.set(file.id, file)
+        
      }
 
      public async getById(id: string): Promise<File | undefined> {
@@ -20,7 +21,8 @@ export class MemoryFileRepository implements FileRepositoryMem {
     }
 
     public async update(file: File): Promise<void> {
-        MemoryFileRepository.files.set(file.id, file);
+       MemoryFileRepository.files.set(file.id, file)
+
     }
 
     public async cancel(id: string): Promise<File> {
