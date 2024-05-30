@@ -22,6 +22,11 @@ export class File {
         this.filePath = filePath
         this.location = location
         this.cancel = () => {}
+        this.downloadSpeed = '0 MB/s'
+        this.downloaded = '0 MB'
+        this.fileSize = '0 MB'
+        this.downloadProgress = '0 MB'
+        this.eta = '0 seconds'
  
     }
    
@@ -35,10 +40,10 @@ export class File {
       }
 
     
-    public updateStatus(chunk: number, totalSize: number): void {
+    public async updateStatus(chunk: number, totalSize: number): Promise<void> {
 
 
-        const importStatus = calculateImportStatus(chunk, totalSize)
+        const importStatus = await calculateImportStatus(chunk, totalSize)
 
         this.downloadSpeed = importStatus.downloadSpeedMB
         this.downloaded = importStatus.downloadedSizeMB
@@ -46,17 +51,6 @@ export class File {
         this.downloadProgress = importStatus.downloadProgress
         this.eta = importStatus.eta
 
-    }
-
-    public importStatus(): object {
-        return {
-            
-            downloadSpeed: this.downloadSpeed,
-            downloaded: this.downloaded,
-            fileSize: this.fileSize,
-            downloadProgress: this.downloadProgress,
-            eta: this.eta
-        }
     }
 
     public updateFileStatus(status: FileStatus): void {

@@ -1,8 +1,10 @@
+import { calculateImportStatusResponse } from "../shared/types";
+
 let downloadedSize = 0;
 let downloadedSizeMB = 0;
 const startTime = Date.now();
 
-export const calculateImportStatus = (chunkLength: number, totalSize: number) => {
+export const calculateImportStatus = async (chunkLength: number, totalSize: number): Promise<calculateImportStatusResponse> => {
   downloadedSize += chunkLength;
 
   downloadedSizeMB = +((downloadedSize / 1024 / 1024).toFixed(1));

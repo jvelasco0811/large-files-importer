@@ -12,14 +12,16 @@ describe('Given a user want to Cancel the Import', () => {
             const url = 'https://jv-data-big.s3.amazonaws.com/fhvhv_tripdata_2024-01.csv'
             const response = await api.post('/api/v1/file').send({ url });
             const token = response.body.token
-            const expected =  { id: token, status: 'canceled' }       
+            const expectedToken =  token       
+            const expectedStatus =  'canceled'
 
             // When
             const cancelResponse = await api.delete(`/api/v1/file/${token}/cancel`);
-
+ 
             // Then
             expect(cancelResponse.statusCode).toBe(200)
-            expect(cancelResponse.body).toEqual(expected)
+            expect(cancelResponse.body.id).toBe(expectedToken)
+            expect(cancelResponse.body.status).toBe(expectedStatus)
         })
     })
 

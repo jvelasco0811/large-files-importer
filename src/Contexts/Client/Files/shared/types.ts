@@ -19,3 +19,13 @@ export interface ResponseFileImportStatus {
 
 }
 
+export interface calculateImportStatusResponse {
+
+    downloadSpeedMB: string
+    downloadedSizeMB: string
+    fileSizeMB: string
+    downloadProgress: string
+    eta: string
+
+}
+
