@@ -1,86 +1,111 @@
+
+import { pipeline } from 'node:stream/promises';
+import { Readable } from 'node:stream';
 import { File } from "../domain/File";
 import { FileRepository, FileRepositoryMem } from "../domain/FileRepository";
 import { ErrorHandler } from "../shared/ErrorHandler";
 
+
 export class FileImport {
+    readonly url: string;
 
-    readonly url: string
-
-    constructor(url: string, private fileRepository: FileRepository, private memoryFileRepository: FileRepositoryMem ) {
-        this.url = this.validateURL(url)
+    constructor(url: string, private fileRepository: FileRepository, private memoryFileRepository: FileRepositoryMem) {
+        this.url = this.validateURL(url);
     }
-    
-    async run(): Promise<File> {
-  
-      
-      const downloadTask = async (file: File) => {
 
+    async run(): Promise<File> {
+
+        const urlExists = await this.checkUrlExists();
+
+        if (!urlExists) {
+            throw new ErrorHandler('request_error', 'File not exist',404);
+        }
+
+        const file = File.create();
+        await this.memoryFileRepository.save(file);
+    
+        this.downloadTask(file);
+    
+        this.downloadTask(file).catch(error => {
+            console.error('Download task failed:', error);
+        });
+
+        return file;
+    }
+
+    private async downloadTask(file: File): Promise<void> {
         let downloadTaskController: AbortController | null = null;
         downloadTaskController = new AbortController();
         file.cancel = () => {
             if (downloadTaskController) {
                 downloadTaskController.abort();
+                console.log('Download task aborted.');
                 file.status = 'canceled';
             }
         };
-
+    
         try {
             const response = await fetch(this.url, { signal: downloadTaskController.signal });
-
+        
             const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
+      
+            const stream = response.body as unknown as Readable;
+    
+            const options = { signal: downloadTaskController.signal, highWaterMark: 1024 * 1024 };
 
-            for await (const chunk of response.body) {
-                file.updateStatus(chunk.length, totalSize);
-                const decoder = new TextDecoder();
-                // const text = decoder.decode(chunk);
+            await pipeline(
+                stream,
+                async function* (source: any) {
+                    for await (const chunk of source) {
 
-                await this.memoryFileRepository.update(file);
-                await this.fileRepository.save(chunk, file);
-            }
+                        await file.updateStatus(chunk.length, totalSize);
 
-            file.updateFileStatus('finished')
-            await this.memoryFileRepository.update(file)
+                        yield chunk;
 
+                    }
+                }.bind(this),
+                async (source) => {
+                    for await (const chunk of source) {
+
+                        await this.fileRepository.save(chunk, file);
+
+                    }
+                },
+                options
+            );
+    
+            console.log('Download finished.');
+    
+            file.updateFileStatus('finished');
+            await this.memoryFileRepository.update(file);
+    
         } catch (error: any) {
             if (error.name === 'AbortError') {
-                console.log({type: 'abort_error', message: 'Download canceled'});
+                console.log({ type: 'abort_error', message: 'Download canceled' });
             } else {
-                    throw error;
+                console.error('Download failed:', error);
+                throw new ErrorHandler('download_error', `Download failed: ${error.message}`, 500);
             }
-   
         }
-    };
-  
-    const urlExists = await this.checkUrlExists();
-
-    if (!urlExists) {
-        throw new ErrorHandler('request_error', 'File not exist',404);
     }
-
-    const file = File.create();
-    await this.memoryFileRepository.save(file);
-
-    downloadTask(file);
-
-    return file;
-
-}
-  
+    
 
     private validateURL(url: string): string {
-      const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
+        const urlFormat = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})\/([\w,.-]+\.csv)$/i;
       
-      if (!urlFormat.test(url)) {
-        throw new ErrorHandler('invalid_url_format','Wrong URL format should be a csv file',400);
-      }
-    
-       return url
+        if (!urlFormat.test(url)) {
+          throw new ErrorHandler('invalid_url_format','Wrong URL format should be a csv file',400);
+        }
+      
+         return url
     }
 
     private async checkUrlExists(): Promise<boolean> {
-      const response = await fetch(this.url, { method: 'HEAD' });
-      return response.ok;
-    };
-
-
+        try {
+            const response = await fetch(this.url, { method: 'HEAD' });
+            return response.ok;
+        } catch (error: any) {
+            throw new ErrorHandler('request_error', `Failed to check URL: ${error.message}`, 500);
+        }
+    }
 }

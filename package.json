@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only src/app/index.ts",
     "test": "cross-env NODE_ENV=test jest",
-    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "test:watch": "cross-env NODE_ENV=test jest --detectOpenHandles --watchAll",
     "test:cov": "cross-env NODE_ENV=test jest --coverage"
   },
   "keywords": [],

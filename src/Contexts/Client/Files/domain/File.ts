@@ -44,14 +44,13 @@ export class File {
     
     public async updateStatus(chunk: number, totalSize: number): Promise<void> {
 
+            const importStatus = await this.calculateStatus(chunk, totalSize);
 
-        const importStatus = await this.calculateStatus(chunk, totalSize);
-
-        this.downloadSpeed = importStatus.downloadSpeedMB;
-        this.downloaded = importStatus.downloadedSizeMB;
-        this.fileSize = importStatus.fileSizeMB;
-        this.downloadProgress = importStatus.downloadProgress;
-        this.eta = importStatus.eta;
+            this.downloadSpeed = importStatus.downloadSpeedMB;
+            this.downloaded = importStatus.downloadedSizeMB;
+            this.fileSize = importStatus.fileSizeMB;
+            this.downloadProgress = importStatus.downloadProgress;
+            this.eta = importStatus.eta;
 
     }
 
