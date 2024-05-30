@@ -35,18 +35,18 @@ This File Import Service is a Node.js application designed to handle file import
 ### Installation
 
 1. Clone the repository:
-\`\`\`sh
+\`\`\`
 git clone https://github.com/yourusername/file-import-service.git
 cd file-import-service
 \`\`\`
 
 2. Install dependencies:
-\`\`\`sh
+\`\`\`
 npm install
 \`\`\`
 
 3. Build the TypeScript code:
-\`\`\`sh
+\`\`\`
 npm run build
 \`\`\`
 
@@ -64,7 +64,7 @@ The server will start on the port defined in your configuration (default: 3000).
 
 To run tests, use the following command:
 
-\`\`\`sh
+\`\`\`
 npm test
 \`\`\`
 
