@@ -11,11 +11,11 @@ export class FileImport {
     }
     
     async run(): Promise<File> {
-      const file = File.create();
   
-      let downloadTaskController: AbortController | null = null;
-  
+      
       const downloadTask = async (file: File) => {
+
+        let downloadTaskController: AbortController | null = null;
         downloadTaskController = new AbortController();
         file.cancel = () => {
             if (downloadTaskController) {
@@ -32,16 +32,20 @@ export class FileImport {
             for await (const chunk of response.body) {
                 file.updateStatus(chunk.length, totalSize);
                 const decoder = new TextDecoder();
-                const text = decoder.decode(chunk);
+                // const text = decoder.decode(chunk);
 
                 this.memoryFileRepository.update(file);
                 this.fileRepository.save(chunk, file);
             }
 
-            file.updateFileStatus('finished');
+            file.updateFileStatus('finished')
+            this.memoryFileRepository.update(file)
+
         } catch (error: any) {
             if (error.name === 'AbortError') {
                 console.log({type: 'abort_error', message: 'Download canceled'});
+            } else {
+                    throw error;
             }
    
         }
@@ -53,11 +57,14 @@ export class FileImport {
         throw new ErrorHandler('request_error', 'File not exist',404);
     }
 
+    const file = File.create();
     this.memoryFileRepository.save(file);
+
     downloadTask(file);
 
     return file;
-  }
+
+}
   
 
     private validateURL(url: string): string {
