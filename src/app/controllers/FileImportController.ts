@@ -26,7 +26,7 @@ export const FileImportController = async (req: Request, res: Response) => {
 
 	} catch (error: any) {
 		
-		  res.status(error.code).json({ type: error.type, message: error.message })
+		  res.status(error.code).json({ type: error.type, message: error.message }).end()
 
 	
 		  

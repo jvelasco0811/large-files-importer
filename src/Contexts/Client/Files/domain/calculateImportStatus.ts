@@ -15,14 +15,6 @@ export const calculateImportStatus = () => {
     const fileSizeMB = +((totalSize / 1024 / 1024).toFixed(1));
     const eta = Math.floor(remainingFileSizeMB / downloadSpeedMB);
 
-    console.log({
-      downloadSpeedMB: `${downloadSpeedMB} MB/s`,
-      downloadedSizeMB: `${downloadedSizeMB} MB`,
-      fileSizeMB: `${fileSizeMB} MB`,
-      downloadProgress: `${downloadProgress} %`,
-      eta: `${eta} seconds`
-    });
-
     return {
       downloadSpeedMB: `${downloadSpeedMB} MB/s`,
       downloadedSizeMB: `${downloadedSizeMB} MB`,

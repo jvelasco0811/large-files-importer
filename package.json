@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/app/index.ts",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "test:cov": "jest --coverage"
+    "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only src/app/index.ts",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "test:cov": "cross-env NODE_ENV=test jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,8 @@
     "@types/supertest": "6.0.2",
     "@typescript-eslint/eslint-plugin": "7.6.0",
     "@typescript-eslint/parser": "7.6.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "eslint": "8.56.0",
     "jest": "29.7.0",
     "prettier": "3.2.5",
