@@ -34,12 +34,11 @@ export class FileImport {
     }
 
     private async downloadTask(file: File): Promise<void> {
-        let downloadTaskController: AbortController | null = null;
-        downloadTaskController = new AbortController();
+        const downloadTaskController = new AbortController();
+
         file.cancel = () => {
             if (downloadTaskController) {
                 downloadTaskController.abort();
-                console.log('Download task aborted.');
                 file.status = 'canceled';
             }
         };
@@ -49,15 +48,18 @@ export class FileImport {
         
             const totalSize = parseInt(response.headers.get('content-length') || '0', 10);
       
-            const stream = response.body as unknown as Readable;
+            const stream = Readable.from(response.body)
     
             const options = { signal: downloadTaskController.signal, highWaterMark: 1024 * 1024 };
 
             await pipeline(
                 stream,
                 async function* (source: any) {
-                    for await (const chunk of source) {
 
+                    for await (const chunk of source) {
+                        if (downloadTaskController.signal.aborted) {
+                            break;
+                        }
                         await file.updateStatus(chunk.length, totalSize);
 
                         yield chunk;
@@ -66,7 +68,9 @@ export class FileImport {
                 }.bind(this),
                 async (source) => {
                     for await (const chunk of source) {
-
+                        if (downloadTaskController.signal.aborted) {
+                            break;
+                        }
                         await this.fileRepository.save(chunk, file);
 
                     }
@@ -74,10 +78,10 @@ export class FileImport {
                 options
             );
     
-            console.log('Download finished.');
-    
-            file.updateFileStatus('finished');
-            await this.memoryFileRepository.update(file);
+            if (!downloadTaskController.signal.aborted) {
+                file.updateFileStatus('finished');
+                await this.memoryFileRepository.update(file);
+            }
     
         } catch (error: any) {
             if (error.name === 'AbortError') {
